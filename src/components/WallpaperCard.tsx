@@ -8,32 +8,23 @@ interface WallpaperCardProps {
   item: {
     id: string;
     uri: string;
-    isFavorite?: boolean;
   };
+  isFavorite: boolean;
   onPress: () => void;
+  onToggleFavorite: () => void;
   index: number;
 }
 
 const { width } = Dimensions.get('window');
-// For a 3-column layout, we calculate the width minus paddings and gaps.
-// padding horizontal: 16 on each side (32 total)
-// gap between items: 8 (2 gaps for 3 columns = 16 total)
-// Total available width: width - 32 - 16
 const CARD_WIDTH = (width - 48) / 3;
-const CARD_HEIGHT = CARD_WIDTH * 1.5; // 2:3 aspect ratio
+const CARD_HEIGHT = CARD_WIDTH * 1.5;
 
-export function WallpaperCard({ item, onPress, index }: WallpaperCardProps) {
-  const [isFavorite, setIsFavorite] = useState(item.isFavorite || false);
-
+export function WallpaperCard({ item, isFavorite, onPress, onToggleFavorite, index }: WallpaperCardProps) {
   const heartStyle = useAnimatedStyle(() => {
     return {
       transform: [{ scale: withSpring(isFavorite ? 1.2 : 1) }],
     };
   });
-
-  const toggleFavorite = () => {
-    setIsFavorite(!isFavorite);
-  };
 
   return (
     <TouchableOpacity
@@ -55,7 +46,7 @@ export function WallpaperCard({ item, onPress, index }: WallpaperCardProps) {
       {/* Heart Icon Button overlay */}
       <TouchableOpacity
         activeOpacity={0.7}
-        onPress={toggleFavorite}
+        onPress={onToggleFavorite}
         style={styles.heartButtonContainer}
       >
         <Animated.View style={[styles.heartIconWrap, heartStyle]}>
