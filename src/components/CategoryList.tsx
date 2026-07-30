@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, ImageBackground } from 'react-native';
+import { router } from 'expo-router';
 
 const CATEGORIES = [
   {
@@ -22,11 +23,20 @@ const CATEGORIES = [
     name: 'Girl',
     uri: 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=400&q=80',
   },
+  {
+    id: 'c5',
+    name: '4K',
+    uri: 'https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?auto=format&fit=crop&w=400&q=80',
+  },
 ];
 
 export function CategoryList() {
   const renderItem = ({ item }: { item: typeof CATEGORIES[0] }) => (
-    <TouchableOpacity activeOpacity={0.8} style={styles.cardContainer}>
+    <TouchableOpacity 
+      activeOpacity={0.8} 
+      style={styles.cardContainer}
+      onPress={() => router.push(`/category/${item.name}` as any)}
+    >
       <ImageBackground
         source={{ uri: item.uri }}
         style={styles.cardImage}
@@ -98,7 +108,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
   },
   overlay: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     backgroundColor: 'rgba(0,0,0,0.4)',
     borderRadius: 16,
   },

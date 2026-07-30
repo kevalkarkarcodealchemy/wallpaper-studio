@@ -40,7 +40,7 @@ index 4b26389..e6597c0 100644
 -    }
  }
 diff --git a/node_modules/react-native-manage-wallpaper/android/src/main/java/com/mmmgbhutta/reactnative/wallpapermanager/ManageWallpaperModule.java b/node_modules/react-native-manage-wallpaper/android/src/main/java/com/mmmgbhutta/reactnative/wallpapermanager/ManageWallpaperModule.java
-index 1d525a3..5156c2f 100644
+index 1d525a3..b225685 100644
 --- a/node_modules/react-native-manage-wallpaper/android/src/main/java/com/mmmgbhutta/reactnative/wallpapermanager/ManageWallpaperModule.java
 +++ b/node_modules/react-native-manage-wallpaper/android/src/main/java/com/mmmgbhutta/reactnative/wallpapermanager/ManageWallpaperModule.java
 @@ -138,23 +138,27 @@ public class ManageWallpaperModule extends ReactContextBaseJavaModule {
@@ -86,9 +86,14 @@ index 1d525a3..5156c2f 100644
                  return;
              }
  
-@@ -230,24 +234,28 @@ public class ManageWallpaperModule extends ReactContextBaseJavaModule {
+@@ -228,26 +232,32 @@ public class ManageWallpaperModule extends ReactContextBaseJavaModule {
+     }
+ 
      private CustomTarget<Bitmap> getCustomTarget(final String source, final String type) {
-         return new CustomTarget<Bitmap>(1080, 1920) {
+-        return new CustomTarget<Bitmap>(1080, 1920) {
++        int width = mApplicationContext.getResources().getDisplayMetrics().widthPixels;
++        int height = mApplicationContext.getResources().getDisplayMetrics().heightPixels;
++        return new CustomTarget<Bitmap>(width, height) {
              @Override
 -            public void onResourceReady(Bitmap bitmap, Transition<? super Bitmap> transition) {
 -                try {

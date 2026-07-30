@@ -16,6 +16,8 @@ export default function CustomWallpaperScreen() {
   const { isProcessing, applyWallpaper } = useWallpaper();
   const insets = useSafeAreaInsets();
 
+  const [loadingType, setLoadingType] = useState<'home' | 'lock' | 'both' | 'save' | null>(null);
+
   const pickImage = async () => {
     if (isProcessing) return;
 
@@ -88,23 +90,38 @@ export default function CustomWallpaperScreen() {
             <View style={styles.card}>
               <WallpaperActionButton
                 title="Set Home Screen"
-                onPress={() => selectedUri && applyWallpaper(selectedUri, 'home', () => router.back())}
-                disabled={!selectedUri}
-                isLoading={isProcessing}
+                onPress={() => {
+                  if (selectedUri) {
+                    setLoadingType('home');
+                    applyWallpaper(selectedUri, 'home', () => router.back());
+                  }
+                }}
+                disabled={!selectedUri || (isProcessing && loadingType !== 'home')}
+                isLoading={isProcessing && loadingType === 'home'}
                 iconName="house.fill"
               />
               <WallpaperActionButton
                 title={isAndroidOlderThan24 ? 'Lock Screen (Unsupported)' : 'Set Lock Screen'}
-                onPress={() => selectedUri && applyWallpaper(selectedUri, 'lock', () => router.back())}
-                disabled={!selectedUri || isAndroidOlderThan24}
-                isLoading={isProcessing}
+                onPress={() => {
+                  if (selectedUri) {
+                    setLoadingType('lock');
+                    applyWallpaper(selectedUri, 'lock', () => router.back());
+                  }
+                }}
+                disabled={!selectedUri || isAndroidOlderThan24 || (isProcessing && loadingType !== 'lock')}
+                isLoading={isProcessing && loadingType === 'lock'}
                 iconName="lock.fill"
               />
               <WallpaperActionButton
                 title="Set Both Screens"
-                onPress={() => selectedUri && applyWallpaper(selectedUri, 'both', () => router.back())}
-                disabled={!selectedUri}
-                isLoading={isProcessing}
+                onPress={() => {
+                  if (selectedUri) {
+                    setLoadingType('both');
+                    applyWallpaper(selectedUri, 'both', () => router.back());
+                  }
+                }}
+                disabled={!selectedUri || (isProcessing && loadingType !== 'both')}
+                isLoading={isProcessing && loadingType === 'both'}
                 iconName="iphone"
               />
             </View>
@@ -112,9 +129,14 @@ export default function CustomWallpaperScreen() {
             <View style={styles.card}>
               <WallpaperActionButton
                 title="Save to Photos"
-                onPress={() => selectedUri && applyWallpaper(selectedUri, 'home', () => router.back())}
-                disabled={!selectedUri}
-                isLoading={isProcessing}
+                onPress={() => {
+                  if (selectedUri) {
+                    setLoadingType('save');
+                    applyWallpaper(selectedUri, 'home', () => router.back());
+                  }
+                }}
+                disabled={!selectedUri || (isProcessing && loadingType !== 'save')}
+                isLoading={isProcessing && loadingType === 'save'}
                 iconName="square.and.arrow.down"
               />
             </View>
