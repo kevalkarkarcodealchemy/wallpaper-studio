@@ -31,12 +31,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     orientation: 'portrait',
     userInterfaceStyle: 'dark',
     plugins: [
-      [
-        'expo-router',
-        {
-          root: './app',
-        },
-      ],
+      ...(config.plugins || []),
       [
         'expo-image-picker',
         {
@@ -45,6 +40,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       ],
     ],
     android: {
+      ...config.android,
       package: 'com.yourname.wallpaperapp',
       permissions: [
         'android.permission.SET_WALLPAPER',
@@ -53,8 +49,10 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       ],
     },
     ios: {
+      ...config.ios,
       bundleIdentifier: 'com.yourname.wallpaperapp',
       infoPlist: {
+        ...config.ios?.infoPlist,
         NSPhotoLibraryAddUsageDescription: 'This app needs access to save wallpapers to your photo library.',
       },
     },

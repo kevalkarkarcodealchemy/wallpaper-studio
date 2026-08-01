@@ -1,12 +1,13 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, ImageBackground } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { ImageBackground } from 'expo-image';
 import { router } from 'expo-router';
 
 const CATEGORIES = [
   {
     id: 'c1',
     name: 'Abstract',
-    uri: 'https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?auto=format&fit=crop&w=400&q=80',
+    uri: 'https://res.cloudinary.com/ur5fixyr/image/upload/v1785403752/pexels-diva-34886773_xanwkg.jpg',
   },
   {
     id: 'c2',
@@ -26,7 +27,12 @@ const CATEGORIES = [
   {
     id: 'c5',
     name: '4K',
-    uri: 'https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?auto=format&fit=crop&w=400&q=80',
+    uri: 'https://res.cloudinary.com/ur5fixyr/image/upload/v1785567885/flowers_1505_1080x2400px_g3stpv.jpg',
+  },
+  {
+    id: 'c6',
+    name: 'Cars',
+    uri: 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=400&q=80',
   },
 ];
 

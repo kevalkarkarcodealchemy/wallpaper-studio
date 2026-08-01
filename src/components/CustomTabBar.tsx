@@ -1,23 +1,23 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Platform } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
-import { SymbolView } from 'expo-symbols';
-import Animated, { useAnimatedStyle, withSpring, withTiming } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, withTiming, withSpring } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { HomeIcon, HeartIcon, SettingIcon, BackgroundIcon, Background1Icon, Background2Icon } from './TabIcons';
 
 const { width } = Dimensions.get('window');
 
-// We map route names to Symbol names
-const getIconName = (routeName: string): any => {
+const getIcon = (routeName: string, isFocused: boolean) => {
+  const color = isFocused ? '#ffffff' : '#ABB7C2';
   switch (routeName) {
     case 'index':
-      return 'house.fill';
+      return <HomeIcon color={color} />;
     case 'favorite':
-      return 'heart.fill';
+      return <HeartIcon color={color} />;
     case 'setting':
-      return 'gearshape.fill';
+      return <SettingIcon color={color} />;
     default:
-      return 'circle';
+      return <HomeIcon color={color} />;
   }
 };
 
@@ -51,29 +51,22 @@ export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarPro
               accessibilityLabel={options.tabBarAccessibilityLabel}
               onPress={onPress}
               style={styles.tabItem}
+              activeOpacity={0.8}
             >
-              <Animated.View style={[styles.iconContainer, { opacity: isFocused ? 1 : 0.5 }]}>
-                {Platform.OS === 'ios' || Platform.OS === 'android' ? (
-                  <SymbolView
-                    name={getIconName(route.name)}
-                    tintColor={isFocused ? '#ffffff' : '#a1a1aa'}
-                    size={24}
-                    fallback={
-                      // Fallback just in case
-                      <Text style={{ color: isFocused ? '#ffffff' : '#a1a1aa', fontSize: 24 }}>
-                        {route.name === 'index' ? '🏠' : route.name === 'favorite' ? '❤️' : '⚙️'}
-                      </Text>
-                    }
-                  />
-                ) : (
-                  <Text style={{ color: isFocused ? '#ffffff' : '#a1a1aa', fontSize: 24 }}>
-                    {route.name === 'index' ? '🏠' : route.name === 'favorite' ? '❤️' : '⚙️'}
-                  </Text>
-                )}
-                {isFocused && (
-                  <Animated.View style={styles.activeDot} />
-                )}
-              </Animated.View>
+              {isFocused && (
+                <Animated.View style={styles.activeBackground}>
+                  <View style={styles.glowContainer}>
+                    <BackgroundIcon style={styles.bgIcon1} />
+                    <Background1Icon style={styles.bgIcon2} />
+                    <Background2Icon style={styles.bgIcon3} />
+                  </View>
+                </Animated.View>
+              )}
+              <View style={styles.iconContainer}>
+                <Animated.View style={{ zIndex: 2 }}>
+                  {getIcon(route.name, isFocused)}
+                </Animated.View>
+              </View>
             </TouchableOpacity>
           );
         })}
@@ -94,9 +87,9 @@ const styles = StyleSheet.create({
   tabBar: {
     flexDirection: 'row',
     width: width * 0.85,
-    height: 64,
-    backgroundColor: 'rgba(24, 24, 27, 0.85)',
-    borderRadius: 32,
+    height: 70,
+    backgroundColor: '#0F0F16', // Dark background as in the image
+    borderRadius: 35,
     alignItems: 'center',
     justifyContent: 'space-around',
     paddingHorizontal: 16,
@@ -106,30 +99,48 @@ const styles = StyleSheet.create({
       width: 0,
       height: 10,
     },
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.5,
     shadowRadius: 15,
     // Android Shadow
     elevation: 10,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+    overflow: 'hidden', // to ensure glow doesn't break the pill shape if intended, wait, the design shows it spilling over slightly or contained. Looking at the image, it's contained inside the pill shape. Let's keep overflow hidden.
   },
   tabItem: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    height: '100%',
   },
   iconContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    height: 40,
-    width: 40,
+    height: 48,
+    width: 48,
   },
-  activeDot: {
+  activeBackground: {
     position: 'absolute',
-    bottom: -8,
-    width: 4,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: '#ffffff',
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 0,
   },
-});
+  glowContainer: {
+    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  bgIcon1: {
+    position: 'absolute',
+    transform: [{ translateY: -12 },{translateX: 2}],
+  },
+  bgIcon2: {
+    position: 'absolute',
+      transform: [ { translateY: -15 }, {translateX: -12 }],
+  },
+  bgIcon3: {
+    position: 'absolute',
+    opacity: 0.8,
+    transform: [{ translateY:3 }, {translateX: -10}],
+  },
+}); 

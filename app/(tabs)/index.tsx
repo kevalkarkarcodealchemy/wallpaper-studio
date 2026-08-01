@@ -4,6 +4,8 @@ import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { WallpaperCard } from '../../src/components/WallpaperCard';
 import { useWallpaperStore, Wallpaper } from '../../src/store/useWallpaperStore';
+import { useCloudinary } from '../../src/hooks/useCloudinary';
+import { useEffect } from 'react';
 import { FeaturedCarousel } from '../../src/components/FeaturedCarousel';
 import { CategoryList } from '../../src/components/CategoryList';
 
@@ -12,13 +14,31 @@ export default function HomeScreen() {
   const wallpapers = useWallpaperStore((state) => state.wallpapers);
   const favorites = useWallpaperStore((state) => state.favorites);
   const toggleFavorite = useWallpaperStore((state) => state.toggleFavorite);
+  const setWallpapers = useWallpaperStore((state) => state.setWallpapers);
+
+  const { images, loading, getImages } = useCloudinary();
+
+  useEffect(() => {
+    getImages('Mix');
+  }, [getImages]);
+
+  useEffect(() => {
+    if (images.length > 0) {
+      setWallpapers(
+        images.map((img) => ({
+          id: img.id,
+          uri: img.secure_url,
+        }))
+      );
+    }
+  }, [images, setWallpapers]);
 
   const renderItem = ({ item, index }: ListRenderItemInfo<Wallpaper>) => (
     <WallpaperCard
       item={item}
       index={index}
-      isFavorite={favorites.includes(item.id)}
-      onToggleFavorite={() => toggleFavorite(item.id)}
+      isFavorite={favorites.some((fav) => fav.id === item.id)}
+      onToggleFavorite={() => toggleFavorite(item)}
       onPress={() => {
         router.push({ pathname: '/custom', params: { uri: item.uri } });
       }}

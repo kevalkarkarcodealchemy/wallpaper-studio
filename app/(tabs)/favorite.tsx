@@ -7,19 +7,18 @@ import { useWallpaperStore, Wallpaper } from '../../src/store/useWallpaperStore'
 export default function FavoriteScreen() {
   const insets = useSafeAreaInsets();
   
-  const wallpapers = useWallpaperStore((state) => state.wallpapers);
   const favorites = useWallpaperStore((state) => state.favorites);
   const toggleFavorite = useWallpaperStore((state) => state.toggleFavorite);
 
-  // Filter wallpapers to only include favorites
-  const favoriteWallpapers = wallpapers.filter((w) => favorites.includes(w.id));
+  // The favorites store now contains the full Wallpaper objects
+  const favoriteWallpapers = favorites;
 
   const renderItem = ({ item, index }: ListRenderItemInfo<Wallpaper>) => (
     <WallpaperCard
       item={item}
       index={index}
       isFavorite={true}
-      onToggleFavorite={() => toggleFavorite(item.id)}
+      onToggleFavorite={() => toggleFavorite(item)}
       onPress={() => {
         router.push({ pathname: '/custom', params: { uri: item.uri } });
       }}

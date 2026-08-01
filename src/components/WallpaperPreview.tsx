@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Image, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
+import { Image } from 'expo-image';
 import { SymbolView } from 'expo-symbols';
 
 interface Props {
@@ -10,7 +11,7 @@ export const WallpaperPreview: React.FC<Props> = ({ uri }) => {
   return (
     <View style={styles.container}>
       {uri ? (
-        <Image source={{ uri }} style={styles.image} resizeMode="cover" />
+        <Image source={{ uri }} style={styles.image} contentFit="cover" />
       ) : (
         <View style={styles.placeholder}>
           <SymbolView name="photo" size={48} tintColor="#3f3f46" />

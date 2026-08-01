@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, StyleSheet, Dimensions, FlatList, Text, ViewToken, ImageBackground } from 'react-native';
+import { View, StyleSheet, Dimensions, FlatList, Text, ViewToken } from 'react-native';
+import { ImageBackground } from 'expo-image';
 
 const { width } = Dimensions.get('window');
 

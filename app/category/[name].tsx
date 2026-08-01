@@ -26,8 +26,8 @@ export default function CategoryScreen() {
     <WallpaperCard
       item={{ id: item.id, uri: item.secure_url }}
       index={index}
-      isFavorite={favorites.includes(item.id)}
-      onToggleFavorite={() => toggleFavorite(item.id)}
+      isFavorite={favorites.some((fav) => fav.id === item.id)}
+      onToggleFavorite={() => toggleFavorite({ id: item.id, uri: item.secure_url })}
       onPress={() => {
         router.push({ pathname: '/custom', params: { uri: item.secure_url } });
       }}

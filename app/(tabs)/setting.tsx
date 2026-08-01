@@ -198,7 +198,7 @@ export default function SettingScreen() {
         <View style={styles.modalOverlay}>
           <View style={[styles.modalContent, { alignItems: 'flex-start', paddingBottom: 24, paddingTop: 24 }]}>
             <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: '100%', marginBottom: 24, position: 'relative'}}>
-              <Text style={[styles.modalTitle, {marginBottom: 0}]}>About Wallpaper Studio</Text>
+              <Text style={[styles.modalTitle, {marginBottom: 0, paddingHorizontal: 32}]}>About Wallpaper Studio</Text>
               <TouchableOpacity 
                 onPress={() => setShowAboutModal(false)}
                 hitSlop={{top: 10, right: 10, bottom: 10, left: 10}}
