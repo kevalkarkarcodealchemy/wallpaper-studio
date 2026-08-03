@@ -1,14 +1,21 @@
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
-import Animated, { useAnimatedStyle, withTiming, withSpring } from 'react-native-reanimated';
+import Animated, {
+  useAnimatedStyle,
+  withSpring,
+  withTiming,
+} from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { HomeIcon, HeartIcon, SettingIcon, BackgroundIcon, Background1Icon, Background2Icon } from './TabIcons';
+import { HomeIcon, HeartIcon, SettingIcon } from './TabIcons';
 
 const { width } = Dimensions.get('window');
 
+const ACTIVE_COLOR = '#4F46E5';   // Indigo/Blue like in reference image
+const INACTIVE_COLOR = '#9CA3AF'; // Grey for unselected
+
 const getIcon = (routeName: string, isFocused: boolean) => {
-  const color = isFocused ? '#ffffff' : '#ABB7C2';
+  const color = isFocused ? '#ffffff' : INACTIVE_COLOR;
   switch (routeName) {
     case 'index':
       return <HomeIcon color={color} />;
@@ -20,6 +27,52 @@ const getIcon = (routeName: string, isFocused: boolean) => {
       return <HomeIcon color={color} />;
   }
 };
+
+function TabItem({
+  route,
+  isFocused,
+  onPress,
+  accessibilityLabel,
+}: {
+  route: any;
+  isFocused: boolean;
+  onPress: () => void;
+  accessibilityLabel?: string;
+}) {
+  const animatedStyle = useAnimatedStyle(() => ({
+    backgroundColor: withTiming(isFocused ? ACTIVE_COLOR : 'transparent', {
+      duration: 250,
+    }),
+    shadowColor: ACTIVE_COLOR,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: withTiming(isFocused ? 0.5 : 0, { duration: 250 }),
+    shadowRadius: 10,
+    elevation: withTiming(isFocused ? 10 : 0, { duration: 250 }),
+    transform: [
+      {
+        scale: withSpring(isFocused ? 1 : 0.9, {
+          damping: 15,
+          stiffness: 150,
+        }),
+      },
+    ],
+  }));
+
+  return (
+    <TouchableOpacity
+      accessibilityRole="button"
+      accessibilityState={isFocused ? { selected: true } : {}}
+      accessibilityLabel={accessibilityLabel}
+      onPress={onPress}
+      style={styles.tabItem}
+      activeOpacity={0.85}
+    >
+      <Animated.View style={[styles.iconWrapper, animatedStyle]}>
+        {getIcon(route.name, isFocused)}
+      </Animated.View>
+    </TouchableOpacity>
+  );
+}
 
 export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
@@ -44,30 +97,13 @@ export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarPro
           };
 
           return (
-            <TouchableOpacity
+            <TabItem
               key={route.key}
-              accessibilityRole="button"
-              accessibilityState={isFocused ? { selected: true } : {}}
-              accessibilityLabel={options.tabBarAccessibilityLabel}
+              route={route}
+              isFocused={isFocused}
               onPress={onPress}
-              style={styles.tabItem}
-              activeOpacity={0.8}
-            >
-              {isFocused && (
-                <Animated.View style={styles.activeBackground}>
-                  <View style={styles.glowContainer}>
-                    <BackgroundIcon style={styles.bgIcon1} />
-                    <Background1Icon style={styles.bgIcon2} />
-                    <Background2Icon style={styles.bgIcon3} />
-                  </View>
-                </Animated.View>
-              )}
-              <View style={styles.iconContainer}>
-                <Animated.View style={{ zIndex: 2 }}>
-                  {getIcon(route.name, isFocused)}
-                </Animated.View>
-              </View>
-            </TouchableOpacity>
+              accessibilityLabel={options.tabBarAccessibilityLabel}
+            />
           );
         })}
       </View>
@@ -86,24 +122,23 @@ const styles = StyleSheet.create({
   },
   tabBar: {
     flexDirection: 'row',
-    width: width * 0.85,
-    height: 70,
-    backgroundColor: '#0F0F16', // Dark background as in the image
-    borderRadius: 35,
+    width: width * 0.75,
+    height: 68,
+    backgroundColor: '#fffffff2',
+    borderRadius: 24,
     alignItems: 'center',
-    justifyContent: 'space-around',
-    paddingHorizontal: 16,
+    justifyContent: 'space-evenly',
+    paddingHorizontal: 8,
     // iOS Shadow
-    shadowColor: '#000',
+    shadowColor: '#000000',
     shadowOffset: {
       width: 0,
-      height: 10,
+      height: 6,
     },
-    shadowOpacity: 0.5,
-    shadowRadius: 15,
+    shadowOpacity: 0.12,
+    shadowRadius: 16,
     // Android Shadow
-    elevation: 10,
-    overflow: 'hidden', // to ensure glow doesn't break the pill shape if intended, wait, the design shows it spilling over slightly or contained. Looking at the image, it's contained inside the pill shape. Let's keep overflow hidden.
+    elevation: 12,
   },
   tabItem: {
     flex: 1,
@@ -111,36 +146,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     height: '100%',
   },
-  iconContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 48,
+  iconWrapper: {
     width: 48,
-  },
-  activeBackground: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 0,
-  },
-  glowContainer: {
-    position: 'absolute',
+    height: 48,
+    borderRadius: 14,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  bgIcon1: {
-    position: 'absolute',
-    transform: [{ translateY: -12 },{translateX: 2}],
-  },
-  bgIcon2: {
-    position: 'absolute',
-      transform: [ { translateY: -15 }, {translateX: -12 }],
-  },
-  bgIcon3: {
-    position: 'absolute',
-    opacity: 0.8,
-    transform: [{ translateY:3 }, {translateX: -10}],
-  },
-}); 
+});
